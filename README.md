@@ -1,2 +1,2 @@
 # leetcode
-bug branch
+Git is a free software.
