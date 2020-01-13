@@ -1,2 +1,2 @@
 # leetcode
-Git is a free software.
+My Code For LeetCode.
