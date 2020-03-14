@@ -71,6 +71,7 @@
     <ClInclude Include="LC_BinarySearch.h" />
     <ClInclude Include="LC_Common.h" />
     <ClInclude Include="LC_Base.h" />
+    <ClInclude Include="LC_String.h" />
     <ClInclude Include="LeetCode.h" />
     <ClInclude Include="LintCode.h" />
     <ClInclude Include="std_head.h" />

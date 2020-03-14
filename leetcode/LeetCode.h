@@ -2,3 +2,4 @@
 #include "LC_BinarySearch.h"
 #include "LC_LinkedList.h"
 #include "LC_Dynamic.h"
+#include "LC_String.h"

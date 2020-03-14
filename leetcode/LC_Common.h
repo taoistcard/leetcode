@@ -1,4 +1,5 @@
-﻿#include "LC_Base.h"
+﻿#pragma once
+#include "LC_Base.h"
 
 namespace LeetCode
 {
