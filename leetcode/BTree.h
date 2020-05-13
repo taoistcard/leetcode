@@ -260,6 +260,131 @@ namespace CppTest
 		{
 			cout << setw(4) << pNode->val << ' ';
 		}
+
+		static void preOrderTraverse_NonRecursion(TreeNode* root)
+		{
+			std::stack<TreeNode*> st;
+			st.push(root);
+			while (!st.empty())
+			{
+				TreeNode* pNode = st.top();
+				cout << setw(4) << pNode->val << ' ';
+				st.pop();
+				if (pNode->right)
+					st.push(pNode->right);
+				if (pNode->left)
+					st.push(pNode->left);
+			}
+		}
+		static void preOrderTraverse_NonRecursion1(TreeNode* root)
+		{
+			if (root == nullptr)
+				return;
+			std::stack<TreeNode*> st; //存访问过的根节点
+			TreeNode* pNode = root;
+			while (!st.empty() || !pNode)
+			{
+				while (pNode)
+				{
+					cout << setw(4) << pNode->val << ' ';
+					st.push(pNode);
+					pNode = pNode->left;
+				}
+				if (!st.empty())
+				{
+					pNode = st.top();
+					st.pop();
+					pNode = pNode->right;
+				}
+			}
+		}
+		static void preOrderTraverse_NonRecursion2(TreeNode* root)
+		{
+			if (root == nullptr)
+				return;
+			std::stack<TreeNode*> st; //存访问过的根节点
+			TreeNode* pNode = root;
+			while (!st.empty() || !pNode)
+			{
+				if (pNode)
+				{
+					cout << setw(4) << pNode->val << ' ';
+					st.push(pNode);
+					pNode = pNode->left;
+				}
+				else
+				{
+					pNode = st.top();
+					st.pop();
+					pNode = pNode->right;
+				}
+			}
+		}
+
+		static void inOrderTraverse_NonRecursion(TreeNode* root)
+		{
+			std::stack<TreeNode*> st;
+			st.push(root);
+			while (!st.empty())
+			{
+				TreeNode* pNode = st.top();
+				st.pop();
+				if (pNode->right)
+				{
+					st.push(pNode->right);
+				}
+
+				if (pNode->left)
+				{
+					st.push(pNode);
+					st.push(pNode->left);
+				}
+				else
+					cout << setw(4) << pNode->val << ' ';
+			}
+		}
+		static void inOrderTraverse_NonRecursion1(TreeNode* root)
+		{
+			if (root == nullptr)
+				return;
+			std::stack<TreeNode*> st;
+			TreeNode* pNode = root;
+			while (!st.empty() || !pNode)
+			{
+				if (pNode)
+				{
+					st.push(pNode);
+					pNode = pNode->left;
+				}
+				else
+				{
+					pNode = st.top();
+					st.pop();
+					cout << setw(4) << pNode->val << ' ';
+					pNode = pNode->right;
+				}
+			}
+		}
+		static void inOrderTraverse_NonRecursion2(TreeNode* root)
+		{
+			if (root == nullptr)
+				return;
+			std::stack<TreeNode*> st;
+			TreeNode* pNode = root;
+			while (!st.empty() || !pNode)
+			{
+				while (pNode)
+				{
+					st.push(pNode);
+					pNode = pNode->left;
+				}
+				
+				pNode = st.top();
+				st.pop();
+				cout << setw(4) << pNode->val << ' ';
+				pNode = pNode->right;
+			}
+		}
 		static void lastOrderTraverse_NonRecursion(TreeNode* root)
 		{
 			TreeNode* pNode = root;
@@ -314,6 +439,42 @@ namespace CppTest
 			}
 		}
 
+		static void lastOrderTraverse_NonRecursion1(TreeNode* root)
+		{
+			if (root == nullptr)
+				return;
+
+			std::stack<int> flag;
+			std::stack<TreeNode*> st;
+			TreeNode* pNode = root;
+			while (!st.empty() || pNode)
+			{
+				if (pNode)
+				{
+					st.push(pNode);
+					flag.push(1);
+					pNode = pNode->left;
+				}
+				else
+				{
+					pNode = st.top();
+					int f = flag.top();
+					if (f == 1)
+					{
+						flag.pop();
+						flag.push(2); //pNode 右子节点已访问
+						pNode = pNode->right;
+					}
+					else if (f == 2)
+					{
+						st.pop();
+						flag.pop();
+						cout << setw(4) << pNode->val << ' ';
+						pNode = nullptr;
+					}
+				}
+			}
+		}
 		//二叉树的所有路径
 		static	vector<string> binaryTreePaths(TreeNode* root)
 		{
