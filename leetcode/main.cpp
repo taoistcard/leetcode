@@ -7,6 +7,7 @@
 #include <iomanip>
 
 #include "BTree.h"
+#include "Sort.h"
 
 using namespace std;
 class CSgsRandUint
@@ -162,6 +163,7 @@ static void test()
 	//LeetCode::Solution35::test();
 	LeetCode::test();
 	//test_ss();
+	//CppTest::test_sort();
 }
 int main()
 {
@@ -283,7 +285,7 @@ int main()
 	//	std::cout << (int)buffer[i] << std::endl;
 	//}
 
-test();
+	test();
 	system("pause");
 	return 0;
 }

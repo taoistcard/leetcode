@@ -74,6 +74,7 @@
     <ClInclude Include="LC_String.h" />
     <ClInclude Include="LeetCode.h" />
     <ClInclude Include="LintCode.h" />
+    <ClInclude Include="Sort.h" />
     <ClInclude Include="std_head.h" />
     <ClInclude Include="string_func.h" />
     <ClInclude Include="Test.h" />
