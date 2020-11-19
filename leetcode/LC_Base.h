@@ -1,5 +1,6 @@
 #pragma once
 #include "std_head.h"
+#include "json/json.h"
 
 #define REG_TEST(N) static bool reg_##N = (reg_test_func(N, std::bind(&Solution##N::test)))
 

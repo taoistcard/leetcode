@@ -66,20 +66,34 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BTree.h" />
+    <ClInclude Include="json\autolink.h" />
+    <ClInclude Include="json\config.h" />
+    <ClInclude Include="json\features.h" />
+    <ClInclude Include="json\forwards.h" />
+    <ClInclude Include="json\json.h" />
+    <ClInclude Include="json\json_batchallocator.h" />
+    <ClInclude Include="json\reader.h" />
+    <ClInclude Include="json\value.h" />
+    <ClInclude Include="json\writer.h" />
     <ClInclude Include="LC_Dynamic.h" />
     <ClInclude Include="LC_LinkedList.h" />
     <ClInclude Include="LC_BinarySearch.h" />
     <ClInclude Include="LC_Common.h" />
     <ClInclude Include="LC_Base.h" />
     <ClInclude Include="LC_String.h" />
+    <ClInclude Include="LC_Tree.h" />
     <ClInclude Include="LeetCode.h" />
     <ClInclude Include="LintCode.h" />
     <ClInclude Include="Sort.h" />
     <ClInclude Include="std_head.h" />
     <ClInclude Include="string_func.h" />
     <ClInclude Include="Test.h" />
+    <ClInclude Include="LC_Array.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="json\json_reader.cpp" />
+    <ClCompile Include="json\json_value.cpp" />
+    <ClCompile Include="json\json_writer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Test.cpp" />
   </ItemGroup>

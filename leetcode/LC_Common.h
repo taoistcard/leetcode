@@ -965,4 +965,404 @@ namespace LeetCode
 	};
 
 
+	class Solution76 {
+		/*
+		给你一个字符串 S、一个字符串 T，请在字符串 S 里面找出：包含 T 所有字符的最小子串。
+
+		示例：
+
+		输入: S = "ADOBECODEBANC", T = "ABC"
+		输出: "BANC"
+		说明：
+
+		如果 S 中不存这样的子串，则返回空字符串 ""。
+		如果 S 中存在这样的子串，我们保证它是唯一的答案。
+
+		来源：力扣（LeetCode）
+		链接：https://leetcode-cn.com/problems/minimum-window-substring
+		著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+		*/
+	private:
+		
+	public:
+		unordered_map<char, int> scnt;
+		unordered_map<char, int> tcnt;
+		bool Found() const
+		{
+			for (const auto& pr : tcnt)
+			{
+				auto it = scnt.find(pr.first);
+				if (it == scnt.end())
+					return false;
+				if (pr.second > it->second)
+					return false;
+			}
+			
+			return true;
+		}
+		
+		string minWindow(string s, string t) {
+			for (const auto& c : t)
+			{
+				tcnt[c]++;
+			}
+			int l = 0, r = -1;
+			int ansL = -1, len = INT_MAX;
+			while (r < (int)s.size())
+			{
+				if (tcnt.find(s[++r]) != tcnt.end())
+					++scnt[s[r]];
+				while (Found() && l <= r)
+				{
+					if (r - l + 1 < len)
+					{
+						ansL = l;
+						len = r - l + 1;
+					}
+					if (tcnt.find(s[l]) != tcnt.end()){
+						--scnt[s[l]];
+					}
+					++l;
+				}
+			}
+			if (ansL == -1)
+				return "";
+			else
+				return s.substr(ansL, len);
+		}
+
+		unordered_map <char, int> ori, cnt;
+
+		bool check() {
+			for (const auto &p : ori) {
+				if (cnt[p.first] < p.second) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		string minWindow2(string s, string t) {
+			for (const auto &c : t) {
+				++ori[c];
+			}
+
+			int l = 0, r = -1;
+			int len = INT_MAX, ansL = -1, ansR = -1;
+
+			while (r < int(s.size())) {
+				if (ori.find(s[++r]) != ori.end()) {
+					++cnt[s[r]];
+				}
+				while (check() && l <= r) {
+					if (r - l + 1 < len) {
+						len = r - l + 1;
+						ansL = l;
+					}
+					if (ori.find(s[l]) != ori.end()) {
+						--cnt[s[l]];
+					}
+					++l;
+				}
+			}
+
+			return ansL == -1 ? string() : s.substr(ansL, len);
+		}
+		
+		static void test()
+		{
+			Solution76 sol;
+			std::string s, t;
+			//std::cin >> s;
+			//std::cin >> t;
+			s = "ADOBECODEBANC";
+			t = "ABC";
+			std::cout << sol.minWindow(s, t) << std::endl;
+		}
+	};
+	REG_TEST(76);
+
+	class Solution146 {
+	public:
+		struct TListNode
+		{
+			TListNode* pre = nullptr;
+			TListNode* next = nullptr;
+			int k = 0;
+			int v = 0;
+		};
+		
+		TListNode* head;
+		TListNode* tail;
+		unordered_map<int, TListNode*> k_map;
+		int cp;
+
+		Solution146(int capacity) {
+			head = tail = nullptr;
+			cp = capacity;
+		}
+		void moveToHead(TListNode* node)
+		{
+			if (node == nullptr)
+				return;
+			if (head == nullptr || tail == nullptr)
+				return;
+			if (head == node)
+				return;
+			//head != tail 一定成立
+			if (node == tail)
+			{
+				tail = tail->pre;
+				tail->next = nullptr;
+			}
+			else
+			{
+				TListNode* pre = node->pre;
+				TListNode* next = node->next;
+				pre->next = next;
+				next->pre = pre;
+			}
+			node->next = head;
+			node->pre = nullptr;
+			head->pre = node;
+			head = node;
+		}
+		int get(int key) {
+			auto it = k_map.find(key);
+			if (it == k_map.end() || it->second == nullptr)
+				return -1;
+			else
+			{
+				moveToHead(it->second);
+				return it->second->v;
+			}
+		}
+
+		void put(int key, int value) {
+			auto it = k_map.find(key);
+			if (it != k_map.end())
+			{
+				TListNode* tmp = it->second;
+				tmp->v = value;
+				moveToHead(tmp);
+				return;
+			}
+			TListNode* node = nullptr;
+			if (k_map.size() == cp)
+			{
+				auto it_rem = k_map.find(tail->k);
+				if (it_rem != k_map.end())
+					k_map.erase(it_rem);
+				node = tail;
+				tail = tail->pre;
+				if (tail)
+					tail->next = nullptr;
+				node->pre = nullptr;
+			}
+			else
+				node = new TListNode();
+			node->k = key;
+			node->v = value;
+			k_map[key] = node;
+			if (head == nullptr)
+			{
+				head = tail = node;
+			}
+			else
+			{
+				node->next = head;
+				head->pre = node;
+				head = node;
+			}
+		}
+
+		static void test()
+		{
+			Solution146 sol(1);
+			sol.put(2, 1);
+			std::cout << sol.get(2) << std::endl;
+			sol.put(3, 2);
+			std::cout << sol.get(2) << std::endl;
+			std::cout << sol.get(3) << std::endl;
+		}
+	};
+	REG_TEST(146);
+
+	class Solution332 {
+	public:
+		/**
+		bool travel(std::vector<std::string>& route, std::string& pre_port)
+		{
+		auto it = tickets.find(pre_port);
+		if(it == tickets.end() || it->second.empty())
+		return false;
+		set<std::string>& tmp = it->second;
+		set<std::string> used_tk;
+		int sz = tmp.size();
+		while(used_tk.size() < sz)
+		{
+		auto it = tmp.begin();
+		for(; it != tmp.end(); )
+		{
+		if(used_tk.count(*it) == 1)
+		continue;
+		break;
+		}
+		if(it == tmp.end())
+		return false;
+		used_tk.insert(*it); //记录使用过的
+
+		route.push_back(*it);
+		tmp.erase(it);
+
+		if(!travel(route, tickets))
+		{
+		tmp.insert(route.back());
+		route.pop_back();
+		continue
+		}
+		return true;
+		}
+		return false;
+		}
+		**/
+		bool travel(std::vector<std::string>& route, std::map<std::string, std::vector<std::string>>& tickets)
+		{
+			if (tickets.empty())
+				return true;
+			if (route.empty())
+			{
+				return false;
+			}
+			
+			unsigned int r_sz = route.size();
+			std::string pre_port = route.back();
+			auto it_pre = tickets.find(pre_port);
+			if (it_pre == tickets.end() || it_pre->second.empty())
+				return false;
+			std::vector<std::string>& next_port = it_pre->second;
+			for (int i = 0; i < next_port.size(); i++)
+			{
+				std::string next = next_port[i];
+				route.push_back(next);
+				next_port.erase(next_port.begin() + i);
+				if (next_port.empty())
+				{
+					tickets.erase(it_pre);
+				}
+				if (!travel(route, tickets))
+				{
+					route.pop_back();
+					auto& tmp_next_port = tickets[pre_port];
+					if (tmp_next_port.empty())
+					{
+						tmp_next_port.push_back(next);
+						break;
+					}
+					else
+					{
+						tmp_next_port.insert(tmp_next_port.begin() + i, next);
+						continue;
+					}
+				}
+				return true;
+			}
+			return false;
+		}
+		std::vector<std::string> findItinerary(std::vector<std::vector<std::string>>& tickets) {
+			std::vector<std::string> route;
+			route.push_back("JFK");
+			std::map<std::string, std::vector<std::string>> tickets_map;
+			for (int i = 0; i<tickets.size(); i++)
+			{
+				if (tickets[i].size() != 2)
+					continue;
+				tickets_map[tickets[i][0]].push_back(tickets[i][1]);
+			}
+			for (auto& pr : tickets_map)
+			{
+				std::sort(pr.second.begin(), pr.second.end());
+			}
+			if (!travel(route, tickets_map))
+			{
+				route.clear();
+			}
+			return route;
+		}
+
+		static void test()
+		{
+			Solution332 sol;
+			//[["MUC","LHR"],["JFK","MUC"],["SFO","SJC"],["LHR","SFO"]]
+			//std::vector<std::vector<std::string>> tickets = {
+			//	{ "MUC", "LHR" },
+			//	{ "JFK", "MUC" },
+			//	{ "SFO", "SJC" },
+			//	{ "LHR", "SFO" },
+			//};
+			//[["JFK","KUL"],["JFK","NRT"],["NRT","JFK"]]
+			//std::vector<std::vector<std::string>> tickets = {
+			//	{ "JFK", "KUL" },
+			//	{ "JFK", "NRT" },
+			//	{ "NRT", "JFK" },
+			//};
+			//[["EZE","AXA"],["TIA","ANU"],["ANU","JFK"],["JFK","ANU"],["ANU","EZE"],["TIA","ANU"],["AXA","TIA"],["TIA","JFK"],["ANU","TIA"],["JFK","TIA"]]
+			//std::vector<std::vector<std::string>> tickets = {
+			//	{ "EZE", "AXA" },
+			//	{ "TIA", "ANU" },
+			//	{ "ANU", "JFK" },
+			//	{ "JFK", "ANU" },
+			//	{ "ANU", "EZE" },
+			//	{ "TIA", "ANU" },
+			//	{ "AXA", "TIA" },
+			//	{ "TIA", "JFK" },
+			//	{ "ANU", "TIA" },
+			//	{ "JFK", "TIA" },
+			//};
+			std::string js = "[[\"EZE\",\"TIA\"],[\"EZE\",\"HBA\"],[\"AXA\",\"TIA\"],[\"JFK\",\"AXA\"],[\"ANU\",\"JFK\"],[\"ADL\",\"ANU\"], \
+				[\"TIA\",\"AUA\"],[\"ANU\",\"AUA\"],[\"ADL\",\"EZE\"],[\"ADL\",\"EZE\"],[\"EZE\",\"ADL\"],[\"AXA\",\"EZE\"],[\"AUA\",\"AXA\"], \
+				[\"JFK\",\"AXA\"],[\"AXA\",\"AUA\"],[\"AUA\",\"ADL\"],[\"ANU\",\"EZE\"],[\"TIA\",\"ADL\"],[\"EZE\",\"ANU\"],[\"AUA\",\"ANU\"]]";
+
+			/*
+			[["CBR","JFK"],["TIA","EZE"],["AUA","TIA"],["JFK","EZE"],["BNE","CBR"],["JFK","CBR"],["CBR","AUA"],["EZE","HBA"],["AXA","ANU"],
+			["BNE","EZE"],["AXA","EZE"],["AUA","ADL"],["OOL","JFK"],["BNE","AXA"],["OOL","EZE"],["EZE","ADL"],["TIA","BNE"],["EZE","TIA"],
+			["JFK","AUA"],["AUA","EZE"],["ANU","ADL"],["TIA","BNE"],["EZE","OOL"],["ANU","BNE"],["EZE","ANU"],["ANU","AUA"],["BNE","ANU"],
+			["CNS","JFK"],["TIA","ADL"],["ADL","AXA"],["JFK","OOL"],["AUA","ADL"],["ADL","TIA"],["ADL","ANU"],["ADL","JFK"],["BNE","EZE"],
+			["ANU","BNE"],["JFK","BNE"],["EZE","AUA"],["EZE","AXA"],["AUA","TIA"],["ADL","CNS"],["AXA","AUA"]]
+			*/
+			js = "[[\"CBR\",\"JFK\"],[\"TIA\",\"EZE\"],[\"AUA\",\"TIA\"],[\"JFK\",\"EZE\"],[\"BNE\",\"CBR\"],[\"JFK\",\"CBR\"],[\"CBR\",\"AUA\"],\
+				 [\"EZE\",\"HBA\"],[\"AXA\",\"ANU\"],[\"BNE\",\"EZE\"],[\"AXA\",\"EZE\"],[\"AUA\",\"ADL\"],[\"OOL\",\"JFK\"],[\"BNE\",\"AXA\"],\
+				 [\"OOL\",\"EZE\"],[\"EZE\",\"ADL\"],[\"TIA\",\"BNE\"],[\"EZE\",\"TIA\"],[\"JFK\",\"AUA\"],[\"AUA\",\"EZE\"],[\"ANU\",\"ADL\"],\
+				 [\"TIA\",\"BNE\"],[\"EZE\",\"OOL\"],[\"ANU\",\"BNE\"],[\"EZE\",\"ANU\"],[\"ANU\",\"AUA\"],[\"BNE\",\"ANU\"],[\"CNS\",\"JFK\"],\
+				 [\"TIA\",\"ADL\"],[\"ADL\",\"AXA\"],[\"JFK\",\"OOL\"],[\"AUA\",\"ADL\"],[\"ADL\",\"TIA\"],[\"ADL\",\"ANU\"],[\"ADL\",\"JFK\"],\
+				 [\"BNE\",\"EZE\"],[\"ANU\",\"BNE\"],[\"JFK\",\"BNE\"],[\"EZE\",\"AUA\"],[\"EZE\",\"AXA\"],[\"AUA\",\"TIA\"],[\"ADL\",\"CNS\"],[\"AXA\",\"AUA\"]]";
+
+			std::vector<std::vector<std::string>> tickets;
+
+			Json::Reader reader;
+			Json::Value root;
+			if (reader.parse(js, root))
+			{
+				if (root.isArray())
+				{
+					int sz = root.size();
+					for (unsigned int i = 0; i < root.size(); i++)
+					{
+						if (root[i].isArray() && root[i].size() == 2)
+						{
+							Json::Value& node = root[i];
+							std::vector<std::string> vc;
+							vc.push_back(node[(unsigned int)0].asString());
+							vc.push_back(node[(unsigned int)1].asString());
+							tickets.push_back(vc);
+						}
+					}
+				}
+			}
+
+			std::vector<std::string> route = sol.findItinerary(tickets);
+		}
+	};
+
+	REG_TEST(332);
 }

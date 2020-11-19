@@ -165,8 +165,19 @@ static void test()
 	//test_ss();
 	//CppTest::test_sort();
 }
+struct TChanelIDNickName
+{
+	unsigned char   chanelid_one;         //可以自己定义
+	unsigned char   chanelid_two;         //可以自己定义
+	unsigned char   chanelid_three;       //可以自己定义
+	unsigned char   chaneltype;           //EmMsgChanelType
+};
 int main()
 {
+	unsigned int channelid = 1000;
+	TChanelIDNickName* pChannelId = (TChanelIDNickName*)(&channelid);
+	TChanelIDNickName ch{ 0, 0, 0, 1 };
+	unsigned int* pCh = (unsigned int*)(&ch);
 	////["cba","daf","ghi"]
 	//std::vector<string> vs{"b", "a"};
 	//cout << LeetCode::Solution944::minDeletionSize(vs) << endl;

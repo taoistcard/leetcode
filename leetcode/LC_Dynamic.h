@@ -687,4 +687,177 @@ namespace LeetCode
 		}
 	};
 	REG_TEST(560);
+
+	class Solution1371 {
+	public:
+		/*
+		 给你一个字符串 s ，请你返回满足以下条件的最长子字符串的长度：每个元音字母，即 'a'，'e'，'i'，'o'，'u' ，在子字符串中都恰好出现了偶数次。
+
+		 示例 1：
+
+		 输入：s = "eleetminicoworoep"
+		 输出：13
+		 解释：最长子字符串是 "leetminicowor" ，它包含 e，i，o 各 2 个，以及 0 个 a，u 。
+		 示例 2：
+
+		 输入：s = "leetcodeisgreat"
+		 输出：5
+		 解释：最长子字符串是 "leetc" ，其中包含 2 个 e 。
+		 示例 3：
+
+		 输入：s = "bcbcbc"
+		 输出：6
+		 解释：这个示例中，字符串 "bcbcbc" 本身就是最长的，因为所有的元音 a，e，i，o，u 都出现了 0 次。
+
+		 来源：力扣（LeetCode）
+		 链接：https://leetcode-cn.com/problems/find-the-longest-substring-containing-vowels-in-even-counts
+		 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+		*/
+		static vector<char> s_yuanyin;
+		int getIndex(char c)
+		{
+			switch (c)
+			{
+			case 'a':
+				return 0;
+			case 'e':
+				return 1;
+			case 'i':
+				return 2;
+			case 'o':
+				return 3;
+			case 'u':
+				return 4;
+			}
+			return -1;
+		}
+		bool isYuanYin(char c)
+		{
+			switch (c)
+			{
+			case 'a':
+			case 'e':
+			case 'i':
+			case 'o':
+			case 'u':
+				return true;
+			default:
+				return false;
+			}
+		}
+		map<char, int> subTimes(map<char, int>& times_1, map<char, int>& times_2)
+		{
+			map<char, int> ret;
+			for (int i = 0; i < s_yuanyin.size(); i++)
+			{
+				char c = s_yuanyin[i];
+				ret[c] = times_1[c] - times_2[c];//不会小于
+			}
+			return ret;
+		}
+		void addTimes(map<char, int>& times_1, map<char, int>& times_2)
+		{
+			for (int i = 0; i < s_yuanyin.size(); i++)
+			{
+				char c = s_yuanyin[i];
+				times_1[c] += times_2[c];
+			}
+		}
+		bool isEven(const map<char, int>& times)
+		{
+			int total = 0;
+			for (auto& pr : times)
+			{
+				if (pr.second % 2 != 0)
+					return false;
+			}
+			return true;
+		}
+
+		int findTheLongestSubstring(string s) {
+			vector<map<char, int>> vtimes;
+			vtimes.resize(s.length());
+			for (int i = 0; i < s.length(); i++)
+			{
+				char c = s[i];
+				if (i > 0)
+				{
+					vtimes[i] = vtimes[i - 1];
+				}
+				if (isYuanYin(c))
+				{
+					vtimes[i][c]++;
+				}
+			}
+			int maxlen = 0;
+			for (int i = 0; i < s.length(); i++)
+			{
+				for (int j = i; j < s.length(); j++)
+				{
+					//[i, j]
+					map<char, int> yt = subTimes(vtimes[j], vtimes[i]);
+					if (isYuanYin(s[i]))
+						yt[s[i]]++;
+					if (isEven(yt))
+					{
+						if (j - i + 1 > maxlen)
+							maxlen = j - i + 1;
+					}
+				}
+			}
+			return maxlen;
+		}
+
+		int findTheLongestSubstring1(string s) {
+			int status = 0; //记录奇偶性的二进制状态，范围是0~31
+			vector<int> pos(1 << 5, -1); //每种status首次出现的位置(重复出现不用理会，子串长度肯定更短)
+			int ans = 0;
+			pos[0] = 0;//特殊处理全是辅音的情况
+			for (int i = 0; i < s.length(); i++)
+			{
+				switch (s[i])
+				{
+				case 'a':
+					status ^= 1 << 0;
+					break;
+				case 'e':
+					status ^= 1 << 1;
+					break;
+				case 'o':
+					status ^= 1 << 2;
+					break;
+				case 'i':
+					status ^= 1 << 3;
+					break;
+				case 'u':
+					status ^= 1 << 4;
+					break;
+				}
+				//奇偶性相同的两点之间子串符合要求
+				if (pos[status] >= 0)
+				{
+					int dis = i + 1 - pos[status];
+					if (dis > ans)
+						ans = dis;
+				}
+				else
+				{
+					pos[status] = i + 1;
+				}
+			}
+			return ans;
+		}
+		static void test()
+		{
+			Solution1371 sol;
+			while (true)
+			{
+				string s;// = "eleetminicoworoep";
+				cin >> s;
+				std::cout << sol.findTheLongestSubstring1(s) << std::endl;
+			}
+		}
+	};
+	vector<char> Solution1371::s_yuanyin = { 'a', 'e', 'i', 'o', 'u' };
+	REG_TEST(1371);
 }
