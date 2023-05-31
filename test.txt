@@ -1,3 +1,4 @@
 add test2
 modify test2
+add line2
 add line1
